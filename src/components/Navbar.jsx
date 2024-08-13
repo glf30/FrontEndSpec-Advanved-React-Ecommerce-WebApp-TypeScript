@@ -17,7 +17,7 @@ function NavigationBar() {
         account_id: "",
         isLoggedIn: false,
       });
-      navigate("/"); // Optionally redirect to home or another page after logout
+      navigate("/"); // redirect to home page after logout
     };
 
   return (

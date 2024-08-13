@@ -7,6 +7,8 @@ import CreateUser from "./components/CreateUser";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AccountDetails from "./components/AccountDetails";
 import NotFound from "./components/NotFound";
+import store from "./store";
+import { Provider } from "react-redux";
 
 function App() {
   const [user, setUser] = useState({
@@ -20,6 +22,7 @@ function App() {
   return (
     <>
     <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
       <UserContext.Provider value={{ user, setUser }}>
         <Router>
           <Routes>
@@ -31,6 +34,7 @@ function App() {
           </Routes>
         </Router>
       </UserContext.Provider>
+      </Provider>
       </QueryClientProvider>
     </>
   );

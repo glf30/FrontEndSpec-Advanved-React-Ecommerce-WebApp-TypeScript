@@ -3,6 +3,7 @@ import UserContext from "../context/UserContext";
 import axios from "axios";
 import NavigationBar from "./NavBar";
 import { Button, Card, Container, Modal, Form } from "react-bootstrap";
+import ShoppingCart from "./ShoppingCart";
 
 const AccountDetails = () => {
   const { user } = useContext(UserContext);
@@ -212,6 +213,8 @@ const handleAccountSubmit = async (event) => {
           </Modal.Body>
         </Modal>
       </Container>
+
+      <ShoppingCart/>
     </>
   );
 };

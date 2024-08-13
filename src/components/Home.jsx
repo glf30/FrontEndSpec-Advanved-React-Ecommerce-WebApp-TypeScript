@@ -5,6 +5,7 @@ import Login from "./Login";
 import NavigationBar from "./NavBar";
 import ProductList from "./ProductList";
 import AccountDetails from "./AccountDetails";
+import ShoppingCart from "./ShoppingCart";
 
 const Home = () => {
   const { user } = useContext(UserContext);

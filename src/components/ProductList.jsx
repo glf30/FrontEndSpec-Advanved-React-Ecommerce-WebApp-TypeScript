@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Card, Button, Container, Row, Col } from "react-bootstrap";
+import { addToCart } from "../features/shoppingCartSlice";
+import { useDispatch } from "react-redux";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]); 
@@ -30,6 +32,12 @@ const ProductList = () => {
 //       console.log(`Error deleting products ${products}`)
 //     }
 //   }
+const dispatch = useDispatch();
+
+const handleAddShoppingCart = (product) => {
+  dispatch(addToCart(product));  
+}
+
 
   return (
     <Container className="col-8 pt-5">
@@ -50,7 +58,7 @@ const ProductList = () => {
                   <Button variant="outline-danger" onClick={() => deleteProduct(product.product_id)}>
                     Delete
                   </Button> */} 
-                  <Button variant="success">
+                  <Button variant="success" onClick={() => handleAddShoppingCart({...product, id: Date.now()})}>
                     Add to Cart
                   </Button>
                 </div>
