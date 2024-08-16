@@ -9,15 +9,18 @@ import AccountDetails from "./components/AccountDetails";
 import NotFound from "./components/NotFound";
 import store from "./store";
 import { Provider } from "react-redux";
+import ShoppingCart from "./components/ShoppingCart";
 
 function App() {
-  const [user, setUser] = useState({
-    username: "",
-    id: "",
-    isLoggedIn: false,
+  const [user, setUser] = useState(() => {
+    let currentUser = sessionStorage.getItem("user");
+    return currentUser ? JSON.parse(currentUser) : { username: "", customer_id: "", account_id: "", isLoggedIn: false };
+
   });
 
-  const queryClient = new QueryClient();
+  
+  
+    const queryClient = new QueryClient();
 
   return (
     <>
@@ -30,6 +33,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/create-user" element={<CreateUser />} />
             <Route path="/account-details" element={<AccountDetails />}/>
+            <Route path="/cart" element={<ShoppingCart />}/>
             <Route path="*" element={<NotFound />}/>
           </Routes>
         </Router>

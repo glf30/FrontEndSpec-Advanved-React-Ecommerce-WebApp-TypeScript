@@ -19,7 +19,8 @@ const Login = () => {
     if (verifiedUser) {
       const currentUser = { username: verifiedUser.username, customer_id: verifiedUser.customer_id, account_id: verifiedUser.account_id, isLoggedIn: true };
       setUser(currentUser);
-      console.log(currentUser)
+      sessionStorage.setItem("user", JSON.stringify(currentUser));
+      // console.log(currentUser)
       setShowModal(false); // Close the modal on successful login
       navigate("/");
     }

@@ -36,7 +36,7 @@ const CreateUser = () => {
     onSuccess: (data) => {
       console.log("Account created:", data);
       setAccountId(data.account_id);  // Store the account_id in state
-
+      sess
       // Set user context and navigate to home
       setUser({
         username: inputUsername,
@@ -44,6 +44,7 @@ const CreateUser = () => {
         account_id: data.account_id,
         isLoggedIn: true,
       });
+      sessionStorage.setItem("user", JSON.stringify({username: inputUsername, customer_id: customerId, account_id: data.account_id, isLoggedIn: true}));
       handleClose(); // Close the modal on success
     },
     onError: (error) => {

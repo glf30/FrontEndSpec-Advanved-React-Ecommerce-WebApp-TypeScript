@@ -1,11 +1,9 @@
 import React, { useContext } from "react";
 import UserContext from "../context/UserContext";
-import { Container } from "react-bootstrap";
-import Login from "./Login";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import NavigationBar from "./NavBar";
 import ProductList from "./ProductList";
-import AccountDetails from "./AccountDetails";
-import ShoppingCart from "./ShoppingCart";
+
 
 const Home = () => {
   const { user } = useContext(UserContext);
@@ -13,18 +11,30 @@ const Home = () => {
   return (
     
     <>
-    <NavigationBar/>
-    <Container>
-      <h1>Waelcome {user.username}</h1>
-      <h1>Customer ID {user.customer_id}</h1>
-      <h1>Account ID {user.account_id}</h1>
+      <NavigationBar />
+      <Container fluid className="p-0">
+        {/* Hero Section */}
+        <div className="bg-dark text-white text-center py-5">
+          <h1 className="display-4">Welcome to Our E-Commerce Site</h1>
+          <p className="lead">Find the best products at unbeatable prices.</p>
+          <Button variant="primary" size="lg">Shop Now</Button>
+        </div>
 
-      <p>
-        Your are now{" "}
-        {user.isLoggedIn ? "Your are logged in" : "You are logged out"}
-      </p>
-    </Container>
-    <ProductList />
+        {/* About Us Section */}
+        <Container className="my-5">
+          <h2>About Us</h2>
+          <p>
+            We are committed to offering the highest quality products at affordable prices.
+            Explore our wide range of products and experience top-notch customer service.
+          </p>
+        </Container>
+
+        {/* Product Listing Section */}
+        <Container className="my-5">
+          <h2>Our Products</h2>
+          <ProductList />
+        </Container>
+      </Container>
     </>
   );
 };

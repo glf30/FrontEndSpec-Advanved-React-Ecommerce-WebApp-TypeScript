@@ -119,6 +119,9 @@ const handleAccountSubmit = async (event) => {
             <Button variant="secondary" onClick={handleEditAccount}>
               Edit Account
             </Button>
+            <Button variant="outline-danger" onClick={handleEditAccount}>
+              Delete Account
+            </Button>
           </Card.Footer>
         </Card>
 
@@ -214,7 +217,6 @@ const handleAccountSubmit = async (event) => {
         </Modal>
       </Container>
 
-      <ShoppingCart/>
     </>
   );
 };
