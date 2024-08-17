@@ -10,6 +10,7 @@ function NotFound() {
         <h1>ERROR: 404</h1>
           <img src={Gandalf} alt="Gandalf" className="img-fluid" />
           <p className="mt-3"><strong>You're not supposed to be here! Fly, you fool.</strong></p>
+          <p>Return to the <a href="/">homepage</a></p>
         </Col>
       </Row>
     </Container>

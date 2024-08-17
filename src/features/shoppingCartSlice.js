@@ -39,9 +39,16 @@ export const shoppingCartSlice = createSlice({
         console.log("Item Deleted")
         console.log(action.payload)
     },
+    clearCart: (state) => {
+        state.shoppingCart = [];
+        state.totalItems = 0;
+        state.totalPrice = 0;
+        localStorage.removeItem("shoppingCartState");
+    }
+
     },
     });
 
-    export const { addToCart, removeFromCart } = shoppingCartSlice.actions;
+    export const { addToCart, removeFromCart, clearCart } = shoppingCartSlice.actions;
 
     export default shoppingCartSlice.reducer;

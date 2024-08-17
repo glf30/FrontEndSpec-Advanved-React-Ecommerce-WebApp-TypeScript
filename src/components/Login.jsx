@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Container, Col, Row, Form, Button, Modal } from 'react-bootstrap';
+import { Container, Col, Row, Form, Button, Modal, Alert } from 'react-bootstrap';
 import { useVerifyUser } from '../hooks/useVerifyUser';
 import UserContext from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
@@ -9,9 +9,10 @@ const Login = () => {
   const navigate = useNavigate();
   const [inputUsername, setInputUsername] = useState(""); 
   const [inputPassword, setInputPassword] = useState("");
-  const { setUser } = useContext(UserContext);
+  const { setUser, isLoggedIn } = useContext(UserContext);
   const [showModal, setShowModal] = useState(true); // Control modal visibility
-  
+  const [loginSuccess, setLoginSuccess] = useState(false); // Track login success
+
   // Get the trigger function from the hook
   const { verifyUser, verifiedUser, loading, error } = useVerifyUser();
 
@@ -20,21 +21,29 @@ const Login = () => {
       const currentUser = { username: verifiedUser.username, customer_id: verifiedUser.customer_id, account_id: verifiedUser.account_id, isLoggedIn: true };
       setUser(currentUser);
       sessionStorage.setItem("user", JSON.stringify(currentUser));
+      setLoginSuccess(true);
       // console.log(currentUser)
-      setShowModal(false); // Close the modal on successful login
-      navigate("/");
+      setTimeout(() => {
+        setShowModal(false); // Close the modal on successful login
+        navigate("/");
+      }, 1000); // Delay navigation for 2 seconds (adjust the delay time as needed)
     }
   }, [verifiedUser, navigate, setUser]);
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // Prevent the default form submission behavior
     const account = { user: inputUsername, pass: inputPassword };
-    await verifyUser(account);
+    try {
+      await verifyUser(account);
+    } catch (error) {
+      console.error(error);
+      alert("Error logging in. Please try again later.");
+    }
   };
 
   const handleClose = () => {
     setShowModal(false); // Close the modal
-    navigate("/")
+    navigate("/");
   };
 
   return (
@@ -72,6 +81,7 @@ const Login = () => {
                   </Button>
                   {loading && <p>Loading...</p>}
                   {error && <p>{error}</p>}
+                  {loginSuccess && <Alert variant="success">Logged in successfully!</Alert>}
                 </Form>
               </Col>
             </Row>

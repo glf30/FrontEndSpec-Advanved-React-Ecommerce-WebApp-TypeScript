@@ -36,7 +36,6 @@ const CreateUser = () => {
     onSuccess: (data) => {
       console.log("Account created:", data);
       setAccountId(data.account_id);  // Store the account_id in state
-      sess
       // Set user context and navigate to home
       setUser({
         username: inputUsername,
@@ -154,6 +153,7 @@ const CreateUser = () => {
 };
 
 export default CreateUser;
+
 
 
 

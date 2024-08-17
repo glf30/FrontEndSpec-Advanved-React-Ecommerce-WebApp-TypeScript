@@ -3,10 +3,13 @@ import UserContext from "../context/UserContext";
 import axios from "axios";
 import NavigationBar from "./NavBar";
 import { Button, Card, Container, Modal, Form } from "react-bootstrap";
-import ShoppingCart from "./ShoppingCart";
+import Footer from "./Footer";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { clearCart } from "../features/shoppingCartSlice";
 
 const AccountDetails = () => {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const [customer, setCustomer] = useState({});
   const [account, setAccount] = useState({});
   const [showEditCustomerModal, setShowEditCustomerModal] = useState(false);
@@ -16,6 +19,8 @@ const AccountDetails = () => {
   const [customerPhone, setCustomerPhone] = useState(customer.phone);
   const [username, setUsername] = useState(account.username);
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const fetchCustomer = async (id) => {
     try {
@@ -88,38 +93,62 @@ const handleAccountSubmit = async (event) => {
         console.error('There was an error updating the customer account!', error);
     }
 };
-  
-  
+
+  // Delete customer function 
+  const deleteCustomer = async (customer_id) => {
+    console.log(`Deleting customer ${customer_id}...`);
+    const confirmed = window.confirm("Are you sure you want to delete this customer?");
+    if (!confirmed) return;
+    try {
+      await axios.delete(`http://127.0.0.1:5000/customers/${customer_id}`)
+      console.log(`Customer ${customer_id} deleted successfully`);
+      sessionStorage.clear();
+      setUser({
+        username: "",
+        customer_id: "",
+        account_id: "",
+        isLoggedIn: false,
+      });
+      sessionStorage.removeItem("user");
+      dispatch(clearCart())
+      navigate("/", {replace: true});
+    } catch (error) {
+      console.log(`Error deleting customer ${customer_id}:`, error);
+    }
+  }
   return (
     <>
       <NavigationBar />
       <Container className="d-flex justify-content-center mt-5">
-        <Card style={{ width: "18rem" }}>
+        <Card >
           <Card.Body>
-            <Card.Title>Account Details</Card.Title>
+            <Card.Title className="text-center">Account Details</Card.Title>
             <Card.Text>
-              <p>
-                <strong>Name:</strong> {customer.name}
+            <p>
+                <strong>ID:</strong> {customer?.customer_id}
               </p>
               <p>
-                <strong>Email:</strong> {customer.email}
+                <strong>Name:</strong> {customer?.name}
               </p>
               <p>
-                <strong>Phone:</strong> {customer.phone}
+                <strong>Email:</strong> {customer?.email}
               </p>
               <p>
-                <strong>Username:</strong> {account.username}
+                <strong>Phone:</strong> {customer?.phone}
+              </p>
+              <p>
+                <strong>Username:</strong> {account?.username}
               </p>
             </Card.Text>
           </Card.Body>
           <Card.Footer className="d-flex justify-content-between">
-            <Button variant="primary" onClick={handleEditCustomer}>
+            <Button className="p-2 m-2" variant="primary" onClick={handleEditCustomer}>
               Edit Customer
             </Button>
-            <Button variant="secondary" onClick={handleEditAccount}>
+            <Button className="p-2 m-2" variant="secondary" onClick={handleEditAccount}>
               Edit Account
             </Button>
-            <Button variant="outline-danger" onClick={handleEditAccount}>
+            <Button className="p-2 m-2" variant="outline-danger" onClick={() => deleteCustomer(customer.customer_id)}>
               Delete Account
             </Button>
           </Card.Footer>
@@ -216,7 +245,7 @@ const handleAccountSubmit = async (event) => {
           </Modal.Body>
         </Modal>
       </Container>
-
+    <Footer />  
     </>
   );
 };
