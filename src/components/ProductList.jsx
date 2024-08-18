@@ -8,22 +8,27 @@ import NavigationBar from "./NavBar";
 import { useGetProducts } from "../hooks/useGetProducts";
 
 const ProductList = () => {
+  
+  const { user } = useContext(UserContext);
+
   const [productList, setProductList] = useState([]); 
+
   const navigate = useNavigate(); 
   const dispatch = useDispatch();
-  const { user } = useContext(UserContext);
   
   const { fetchProducts, products, loading, error } = useGetProducts();
 
+  // get the products
   useEffect(() => {
     fetchProducts();
-  }, []); // Only run once when the component mounts
+  }, []); 
 
   useEffect(() => {
     if (!loading && !error) {
       setProductList(products);
     }
   }, [products, loading, error]);
+
 
   const handleAddShoppingCart = (product) => {
     if (user.isLoggedIn) {

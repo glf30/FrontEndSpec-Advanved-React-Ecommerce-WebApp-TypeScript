@@ -9,17 +9,23 @@ import { useNavigate } from 'react-router-dom';
 
 
 const ShoppingCart = () => {
+  // User
   const { user  } = useContext(UserContext); 
+
+  // Get the shopping cart from the store
   const { shoppingCart, totalPrice, totalItems } = useSelector((state) => state.shoppingCart);
+  
+  // Set up hooks
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+ // Remove from cart function
   const handleRemoveFromCart = useCallback((product) => {
     try {
       dispatch(removeFromCart(product));
     } catch (error) {
       console.error('Error removing product from cart:', error);
-      // Handle the error here, e.g. show an error message to the user
+      
     }
   }, [dispatch]);
 
@@ -30,7 +36,7 @@ const ShoppingCart = () => {
     const currentDate = new Date();
     const formattedDate = currentDate.toISOString().split('T')[0];
 
-    // At this time you can only add 1 of each product to the order
+    // At this time you can only add 1 of each product to the order API will need to be updated to fix this
       const makeOrder = async () => {
       if(productIds.length === 0) {
         alert('Please add items to your cart');

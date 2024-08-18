@@ -6,6 +6,9 @@ export const useVerifyUser = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    // to simulate a authentication i get all of the accounts info and 
+    // then filter it by the user and pass to verify the user
+
     const verifyUser = async (account) => {
         setLoading(true);
         setError(null);

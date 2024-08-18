@@ -1,37 +1,42 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Container, Col, Row, Form, Button, Modal, Alert } from 'react-bootstrap';
-import { useVerifyUser } from '../hooks/useVerifyUser';
-import UserContext from '../context/UserContext';
-import { useNavigate } from 'react-router-dom';
-import Home from './Home';
+import React, { useContext, useState, useEffect } from "react";
+import {
+  Container,
+  Col,
+  Row,
+  Form,
+  Button,
+  Modal,
+  Alert,
+} from "react-bootstrap";
+import { useVerifyUser } from "../hooks/useVerifyUser";
+import UserContext from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import Home from "./Home";
 
 const Login = () => {
-  const navigate = useNavigate();
-  const [inputUsername, setInputUsername] = useState(""); 
-  const [inputPassword, setInputPassword] = useState("");
+  // Get the user context
   const { setUser, isLoggedIn } = useContext(UserContext);
+  // Set up the account to be submit for verification
+  const [inputUsername, setInputUsername] = useState("");
+  const [inputPassword, setInputPassword] = useState("");
+  // Modal Toggle and login handler for confirmation
   const [showModal, setShowModal] = useState(true); // Control modal visibility
   const [loginSuccess, setLoginSuccess] = useState(false); // Track login success
+  // Set up hook
+  const navigate = useNavigate();
 
   // Get the trigger function from the hook
   const { verifyUser, verifiedUser, loading, error } = useVerifyUser();
 
-  useEffect(() => {
-    if (verifiedUser) {
-      const currentUser = { username: verifiedUser.username, customer_id: verifiedUser.customer_id, account_id: verifiedUser.account_id, isLoggedIn: true };
-      setUser(currentUser);
-      sessionStorage.setItem("user", JSON.stringify(currentUser));
-      setLoginSuccess(true);
-      // console.log(currentUser)
-      setTimeout(() => {
-        setShowModal(false); // Close the modal on successful login
-        navigate("/");
-      }, 1000); // Delay navigation for 2 seconds (adjust the delay time as needed)
-    }
-  }, [verifiedUser, navigate, setUser]);
+  // Close the modal
+  const handleClose = () => {
+    setShowModal(false);
+    navigate("/");
+  };
 
+  // Package the form data and send it to be verified by the hook
   const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent the default form submission behavior
+    event.preventDefault();
     const account = { user: inputUsername, pass: inputPassword };
     try {
       await verifyUser(account);
@@ -41,10 +46,24 @@ const Login = () => {
     }
   };
 
-  const handleClose = () => {
-    setShowModal(false); // Close the modal
-    navigate("/");
-  };
+  // Check if the user is verified and set the user context
+  useEffect(() => {
+    if (verifiedUser) {
+      const currentUser = {
+        username: verifiedUser.username,
+        customer_id: verifiedUser.customer_id,
+        account_id: verifiedUser.account_id,
+        isLoggedIn: true,
+      };
+      setUser(currentUser);
+      sessionStorage.setItem("user", JSON.stringify(currentUser));
+      setLoginSuccess(true);
+      // console.log(currentUser)
+      setTimeout(() => {
+        handleClose();
+      }, 1000); // Delay navigation for 2 seconds to show the success message
+    }
+  }, [verifiedUser, navigate, setUser]);
 
   return (
     <>
@@ -56,7 +75,7 @@ const Login = () => {
         <Modal.Body>
           <Container fluid className="p-0">
             <Row className="w-100 justify-content-center">
-              <Col className='col-12'>
+              <Col className="col-12">
                 <Form onSubmit={handleSubmit} className="mt-3">
                   <Form.Group className="mb-3" controlId="formBasicLogin">
                     <Form.Control
@@ -81,7 +100,9 @@ const Login = () => {
                   </Button>
                   {loading && <p>Loading...</p>}
                   {error && <p>{error}</p>}
-                  {loginSuccess && <Alert variant="success">Logged in successfully!</Alert>}
+                  {loginSuccess && (
+                    <Alert variant="success">Logged in successfully!</Alert>
+                  )}
                 </Form>
               </Col>
             </Row>
@@ -93,4 +114,3 @@ const Login = () => {
 };
 
 export default Login;
-

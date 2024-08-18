@@ -14,6 +14,9 @@ import ProductList from "./components/ProductList";
 import Orders from "./components/Orders";
 
 function App() {
+
+  
+  // Set up the user context if there is one in the session storage use that otherwise set up a new user
   const [user, setUser] = useState(() => {
     let currentUser = sessionStorage.getItem("user");
     return currentUser ? JSON.parse(currentUser) : { username: "", customer_id: "", account_id: "", isLoggedIn: false };

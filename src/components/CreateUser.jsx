@@ -7,10 +7,12 @@ import { useMutation } from '@tanstack/react-query';
 import Home from './Home';
 
 const CreateUser = () => {
-  // Form state
+  // Set up the customer to be submit
   const [inputName, setInputName] = useState(""); 
   const [inputEmail, setInputEmail] = useState("");
   const [inputPhone, setInputPhone] = useState("");
+  
+  // set up the account to be submit
   const [inputUsername, setInputUsername] = useState(""); 
   const [inputPassword, setInputPassword] = useState("");
 
@@ -18,39 +20,22 @@ const CreateUser = () => {
   const [customerId, setCustomerId] = useState(null);
   const [accountId, setAccountId] = useState(null);
 
+  // User Context
   const { setUser } = useContext(UserContext);
+
+  // Set hook 
   const navigate = useNavigate();
   
+  // Modal Control
   const [showModal, setShowModal] = useState(true);
+  
+
   const handleClose = () => {
     setShowModal(false);
     navigate("/");
   };
 
-  // useMutation for creating the account
-  const createAccountMutation = useMutation({
-    mutationFn: async (newAccount) => {
-      const response = await axios.post('http://127.0.0.1:5000/customeraccounts', newAccount);
-      return response.data;
-    },
-    onSuccess: (data) => {
-      console.log("Account created:", data);
-      setAccountId(data.account_id);  // Store the account_id in state
-      // Set user context and navigate to home
-      setUser({
-        username: inputUsername,
-        customer_id: customerId,
-        account_id: data.account_id,
-        isLoggedIn: true,
-      });
-      sessionStorage.setItem("user", JSON.stringify({username: inputUsername, customer_id: customerId, account_id: data.account_id, isLoggedIn: true}));
-      handleClose(); // Close the modal on success
-    },
-    onError: (error) => {
-      console.error("Error creating account:", error);
-    }
-  });
-
+  // Form submittion begins the proccess of creating a customer and an account seperatly
   const handleSubmit = async (event) => {
     event.preventDefault();
     console.log("Form submitted");
@@ -64,11 +49,12 @@ const CreateUser = () => {
       });
       console.log("Customer created:", customerResponse.data);
 
-      const customerId = customerResponse.data.customer_id;
-      setCustomerId(customerId); // Store the customer_id in state
+      const customerId = customerResponse.data.customer_id; // The Api has been set up to return the customer_id
+      setCustomerId(customerId);
 
       if (customerId) {
-        // Step 2: Create the account using the stored customer ID
+        // If it gets the customer ID, proceed to create the account
+        // Step 2: Create the account using input username/ password and the stored customer ID
         createAccountMutation.mutate({
           username: inputUsername,
           password: inputPassword,
@@ -81,6 +67,33 @@ const CreateUser = () => {
       console.error("Error during customer creation process:", error);
     }
   };
+
+    // useMutation for creating the account
+    const createAccountMutation = useMutation({
+      mutationFn: async (newAccount) => {
+        const response = await axios.post('http://127.0.0.1:5000/customeraccounts', newAccount);
+        return response.data;
+      },
+      onSuccess: (data) => {
+        console.log("Account created:", data);
+        // API has been set up to return the account_id
+        setAccountId(data.account_id);  // Store the account_id in state
+        // Set user context and navigate to home
+        setUser({
+          username: inputUsername,
+          customer_id: customerId,
+          account_id: accountId,
+          isLoggedIn: true,
+        });
+        sessionStorage.setItem("user", JSON.stringify({username: inputUsername, customer_id: customerId, account_id: data.account_id, isLoggedIn: true}));
+        handleClose(); // Close the modal on success
+      },
+      onError: (error) => {
+        console.error("Error creating account:", error);
+      }
+    });
+
+
 
   return (
     <>

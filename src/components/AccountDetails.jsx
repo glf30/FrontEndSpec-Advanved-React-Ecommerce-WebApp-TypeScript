@@ -9,19 +9,28 @@ import { useNavigate } from "react-router-dom";
 import { clearCart } from "../features/shoppingCartSlice";
 
 const AccountDetails = () => {
+  //User context
   const { user, setUser } = useContext(UserContext);
+
+  // This will hold the customer to  
   const [customer, setCustomer] = useState({});
   const [account, setAccount] = useState({});
+
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhone, setCustomerPhone] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  //MOdal Control
   const [showEditCustomerModal, setShowEditCustomerModal] = useState(false);
   const [showEditAccountModal, setShowEditAccountModal] = useState(false);
-  const [customerName, setCustomerName] = useState(customer.name);
-  const [customerEmail, setCustomerEmail] = useState(customer.email);
-  const [customerPhone, setCustomerPhone] = useState(customer.phone);
-  const [username, setUsername] = useState(account.username);
-  const [password, setPassword] = useState("");
+  
+  // Hook set up
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  // initial customer information fetch to display info on the screen
   const fetchCustomer = async (id) => {
     try {
       const response = await axios.get(`http://127.0.0.1:5000/customers/${id}`);
@@ -47,6 +56,10 @@ const AccountDetails = () => {
     fetchAccount(user.account_id);
   }, []);
 
+  //
+
+
+  // Handle Modal Control for the edit options
   const handleEditCustomer = () => setShowEditCustomerModal(true);
   const handleCloseEditCustomer = () => setShowEditCustomerModal(false);
 
@@ -54,6 +67,8 @@ const AccountDetails = () => {
   const handleCloseEditAccount = () => setShowEditAccountModal(false);
 
   
+
+  // Customer Submit handles the update of the customer information
   const handleCustomerSubmit = async (event) => {
     event.preventDefault();
 
@@ -74,6 +89,7 @@ const AccountDetails = () => {
     }
 };
 
+// Account Submit handles the update of the account information
 const handleAccountSubmit = async (event) => {
     event.preventDefault();
 
@@ -94,7 +110,9 @@ const handleAccountSubmit = async (event) => {
     }
 };
 
-  // Delete customer function 
+ 
+// Delete customer function to delete the customer and account
+// Also sets the context to empty and clears the session storage and cart and navigates to the home page
   const deleteCustomer = async (customer_id) => {
     console.log(`Deleting customer ${customer_id}...`);
     const confirmed = window.confirm("Are you sure you want to delete this customer?");
@@ -116,6 +134,8 @@ const handleAccountSubmit = async (event) => {
       console.log(`Error deleting customer ${customer_id}:`, error);
     }
   }
+
+
   return (
     <>
       <NavigationBar />
