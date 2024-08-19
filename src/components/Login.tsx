@@ -13,16 +13,23 @@ import UserContext from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import Home from "./Home";
 
-const Login = () => {
+const Login: React.FC = () => {
   // Get the user context
-  const { setUser, isLoggedIn } = useContext(UserContext);
-  // Set up the account to be submit for verification
-  const [inputUsername, setInputUsername] = useState("");
-  const [inputPassword, setInputPassword] = useState("");
+  const userContext = useContext(UserContext);
+  if (!userContext) {
+    throw new Error("UserContext must be used within a UserProvider");
+  }
+  const { setUser } = userContext;
+
+  // Set up the account to be submitted for verification
+  const [inputUsername, setInputUsername] = useState<string>("");
+  const [inputPassword, setInputPassword] = useState<string>("");
+
   // Modal Toggle and login handler for confirmation
-  const [showModal, setShowModal] = useState(true); // Control modal visibility
-  const [loginSuccess, setLoginSuccess] = useState(false); // Track login success
-  // Set up hook
+  const [showModal, setShowModal] = useState<boolean>(true); // Control modal visibility
+  const [loginSuccess, setLoginSuccess] = useState<boolean>(false); // Track login success
+
+  // Set up navigation hook
   const navigate = useNavigate();
 
   // Get the trigger function from the hook
@@ -35,7 +42,7 @@ const Login = () => {
   };
 
   // Package the form data and send it to be verified by the hook
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     const account = { user: inputUsername, pass: inputPassword };
     try {
@@ -58,10 +65,9 @@ const Login = () => {
       setUser(currentUser);
       sessionStorage.setItem("user", JSON.stringify(currentUser));
       setLoginSuccess(true);
-      // console.log(currentUser)
       setTimeout(() => {
         handleClose();
-      }, 1000); // Delay navigation for 2 seconds to show the success message
+      }, 1000); // Delay navigation for 1 second to show the success message
     }
   }, [verifiedUser, navigate, setUser]);
 
@@ -99,7 +105,7 @@ const Login = () => {
                     Login
                   </Button>
                   {loading && <p>Loading...</p>}
-                  {error && <p>{error}</p>}
+                  {error && <Alert variant="danger">{error}</Alert>}
                   {loginSuccess && (
                     <Alert variant="success">Logged in successfully!</Alert>
                   )}

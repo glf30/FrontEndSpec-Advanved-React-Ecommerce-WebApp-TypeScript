@@ -7,12 +7,13 @@ import UserContext from "../context/UserContext";
 import { Cart } from "react-bootstrap-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart } from "../features/shoppingCartSlice";
+import { RootState } from "../store";
 
 function NavigationBar() {
   // User Info
   const { user, setUser } = useContext(UserContext);
   // Get the item total for display in the cart
-  const { totalItems } = useSelector((state) => state.shoppingCart);
+  const { totalItems } = useSelector((state: RootState) => state.shoppingCart);
   //hook set up
   const navigate = useNavigate();
   const dispatch = useDispatch();

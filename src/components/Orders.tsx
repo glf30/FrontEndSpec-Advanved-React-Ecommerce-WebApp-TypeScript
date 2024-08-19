@@ -3,15 +3,34 @@ import axios from "axios";
 import UserContext from "../context/UserContext";
 import { useGetProducts } from "../hooks/useGetProducts";
 import { Card, Container, Row, Col } from "react-bootstrap";
-import NavigationBar from "./NavBar";
+import NavigationBar from "./Navbar";
 
-const Orders = () => {
+interface Order {
+  order_id: string;
+  customer_id: string;
+  date: string;
+  products: string[];
+}
+
+interface Product { 
+  product_id: string;
+  name: string;
+  price: number;
+}
+
+const Orders: React.FC = () => {
   // User
-  const { user } = useContext(UserContext);
-  // Set up the initial ordfers the filtered list and the products associated
-  const [orders, setOrders] = useState([]);
-  const [filteredOrders, setFilteredOrders] = useState([]);
-  const [productList, setProductList] = useState([]);
+  const userContext = useContext(UserContext);
+  if (!userContext) {
+    throw new Error("UserContext must be used within a UserProvider");
+  }
+  const { user } = userContext;
+
+  // Set up the initial orders, the filtered list, and the products associated
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
+  const [productList, setProductList] = useState<Product[]>([]);
+
   // Hook to get the products
   const { fetchProducts, products, loading, error } = useGetProducts();
 
@@ -19,11 +38,11 @@ const Orders = () => {
   useEffect(() => {
     fetchOrders();
   }, []);
-  
-  //Set the orders
+
+  // Set the orders
   const fetchOrders = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:5000/orders");
+      const response = await axios.get<Order[]>("http://127.0.0.1:5000/orders");
       setOrders(response.data);
       console.log("Orders fetched:", response.data);
     } catch (error) {
@@ -31,7 +50,7 @@ const Orders = () => {
     }
   };
 
-  // if the orders are fetched filter them by the the customers id
+  // If the orders are fetched, filter them by the customer's ID
   useEffect(() => {
     const filtered = orders.filter(
       (order) => order.customer_id === user.customer_id
@@ -39,12 +58,10 @@ const Orders = () => {
     setFilteredOrders(filtered);
   }, [orders, user.customer_id]);
 
-
-
-  //fetch and set the products list
+  // Fetch and set the products list
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   useEffect(() => {
     if (!loading && !error) {
@@ -52,16 +69,15 @@ const Orders = () => {
     }
   }, [products, loading, error]);
 
-  // Gets the product by id from the product list
-  const getProductById = (productId) => {
+  // Gets the product by ID from the product list
+  const getProductById = (productId: string) => {
     return productList.find((product) => product.product_id === productId);
   };
-
 
   return (
     <>
       <NavigationBar />
-      <Container className="shadow mt-5 rounded-5 p-5"> 
+      <Container className="shadow mt-5 rounded-5 p-5">
         <h3 className="text-center pb-3">Orders</h3>
         <Row>
           {filteredOrders.length > 0 ? (
@@ -79,15 +95,15 @@ const Orders = () => {
                     <Card.Text>Order Date: {order.date || "N/A"}</Card.Text>
 
                     <Card.Text>Products:</Card.Text>
-                    {/* Maps through the order to get the product ids in the list then 
-                    matches those product ids to the product and returns the prodct name to be displayed */}
                     {order.products.length > 0 ? (
                       order.products.map((productId) => {
                         const product = getProductById(productId);
-                        return (
+                        return product ? (
                           <div key={product.product_id}>
                             <Card.Text>- {product.name}</Card.Text>
                           </div>
+                        ) : (
+                          <Card.Text key={productId}>Product not found.</Card.Text>
                         );
                       })
                     ) : (
@@ -107,3 +123,4 @@ const Orders = () => {
 };
 
 export default Orders;
+
