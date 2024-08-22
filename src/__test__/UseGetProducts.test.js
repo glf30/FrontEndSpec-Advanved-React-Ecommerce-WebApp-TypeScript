@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 import axios from "axios";
-import { useGetProducts } from "../hooks/useGetProducts";
+import {useGetProducts} from "../hooks/useGetProducts"
 
 // Create a mock of axios
 jest.mock("axios");

@@ -4,27 +4,14 @@ import UserContext from "../context/UserContext";
 import { useGetProducts } from "../hooks/useGetProducts";
 import { Card, Container, Row, Col } from "react-bootstrap";
 import NavigationBar from "./Navbar";
+import {Order, Product } from "../interface/types"
 
-interface Order {
-  order_id: string;
-  customer_id: string;
-  date: string;
-  products: string[];
-}
 
-interface Product { 
-  product_id: string;
-  name: string;
-  price: number;
-}
 
-const Orders: React.FC = () => {
-  // User
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("UserContext must be used within a UserProvider");
-  }
-  const { user } = userContext;
+
+const Orders = () => {
+  // Database User
+  const { databaseuser } = useContext(UserContext);
 
   // Set up the initial orders, the filtered list, and the products associated
   const [orders, setOrders] = useState<Order[]>([]);
@@ -53,10 +40,10 @@ const Orders: React.FC = () => {
   // If the orders are fetched, filter them by the customer's ID
   useEffect(() => {
     const filtered = orders.filter(
-      (order) => order.customer_id === user.customer_id
+      (order) => order.customer_id === databaseuser.customer_id
     );
     setFilteredOrders(filtered);
-  }, [orders, user.customer_id]);
+  }, [orders, databaseuser.customer_id]);
 
   // Fetch and set the products list
   useEffect(() => {
@@ -90,7 +77,7 @@ const Orders: React.FC = () => {
                       className="mb-2 text-muted" 
                       style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
                     >
-                      Customer: {user.username}
+                      Customer: {databaseuser.name}
                     </Card.Subtitle>
                     <Card.Text>Order Date: {order.date || "N/A"}</Card.Text>
 

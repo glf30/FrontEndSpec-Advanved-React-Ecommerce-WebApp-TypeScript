@@ -1,4 +1,3 @@
-import React from "react";
 import Gandalf from "../assets/images/Gandalf.jpg";
 import { Container, Row, Col } from "react-bootstrap";
 

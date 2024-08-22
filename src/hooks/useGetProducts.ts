@@ -1,12 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { Product } from '../interface/types';
 
-interface Product {
-  product_id: string;
-  name: string;
-  price: number;
-}
-
+//fetches products and returns them 
 export const useGetProducts = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(false);

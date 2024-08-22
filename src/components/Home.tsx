@@ -1,12 +1,10 @@
-import React, { useContext } from "react";
-import UserContext from "../context/UserContext";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container, Button } from "react-bootstrap";
 import NavigationBar from "./Navbar";
 import { useNavigate } from "react-router-dom";
 import Footer from "./Footer";
 
+
 const Home = () => {
-  const { user } = useContext(UserContext);
   const navigate = useNavigate();
 
   return (

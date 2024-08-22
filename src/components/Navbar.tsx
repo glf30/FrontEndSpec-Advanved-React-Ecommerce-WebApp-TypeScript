@@ -1,36 +1,35 @@
-import React, { useContext } from "react";
-import { Navbar, Container, Button, Dropdown, Badge } from "react-bootstrap";
+import { useContext } from "react";
+import { Navbar, Container, Button, Dropdown, Badge, Spinner, Nav } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import image from "../assets/images/logo.webp";
 import UserContext from "../context/UserContext";
 import { Cart } from "react-bootstrap-icons";
-import { useDispatch, useSelector } from "react-redux";
-import { clearCart } from "../features/shoppingCartSlice";
+import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import LoginButton from "./LoginButton";
+import LogoutButton from "./LogoutButton";
+import useVerifyUserNew from "../hooks/useVerifyUserNew";
 
 function NavigationBar() {
-  // User Info
-  const { user, setUser } = useContext(UserContext);
+
+  // The hook returns loading until the database user is set then it returns the database user.
+  // was having issues with it loading the login button cuz it would render before the the home page before it set the context
+  const loading = useVerifyUserNew();
+
+  // DatabaseUser Info
+  const { databaseuser } = useContext(UserContext);
+  
   // Get the item total for display in the cart
   const { totalItems } = useSelector((state: RootState) => state.shoppingCart);
-  //hook set up
+  
+  // Hook set up
   const navigate = useNavigate();
-  const dispatch = useDispatch();
 
-  // Logout function to clear the user context, remove session user redirect to the home page
-  const handleLogout = () => {
-    setUser({
-      username: "",
-      customer_id: "",
-      account_id: "",
-      isLoggedIn: false,
-    });
-    sessionStorage.removeItem("user");
-    dispatch(clearCart());
-    navigate("/", { replace: true });
-  };
-
+  if (loading) {
+    return <Spinner animation="grow" variant="info" />;  
+  }
+  
   return (
     <>
       <Navbar className="navbar navbar-expand-lg bg-body-tertiary">
@@ -45,12 +44,16 @@ function NavigationBar() {
             />{" "}
             E-Commerce
           </Navbar.Brand>
+          <Nav className="me-auto">
+            <Nav.Link href="/">Home</Nav.Link>
+            <Nav.Link href="/products">Products</Nav.Link>
+          </Nav>
           <Navbar.Toggle aria-controls="navbar-nav" />
           <Navbar.Collapse
             id="navbar-nav"
             className="justify-content-end align-items-center"
           >
-            {user.isLoggedIn && (
+            {databaseuser.isLoggedIn && (
               <>
                 {/* Cart Icon and Badge */}
                 <div
@@ -65,18 +68,18 @@ function NavigationBar() {
               </>
             )}
 
-            {user.isLoggedIn ? (
+            {databaseuser.isLoggedIn ? (
               <>
                 {/* Dropdown for logged-in user */}
                 <Dropdown align="end" className="me-3">
                   <Dropdown.Toggle variant="secondary" id="dropdown-basic">
-                    {user.username}
+                    {databaseuser.name}
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu>
                     <Dropdown.Item
                       onClick={() =>
-                        navigate("/account-details", { replace: true })
+                        navigate("/profile", { replace: true })
                       }
                     >
                       Account Details
@@ -88,28 +91,11 @@ function NavigationBar() {
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-
-                {/* Logout Button */}
-                <Button onClick={handleLogout} variant="outline-danger">
-                  Logout
-                </Button>
+                <LogoutButton/>
               </>
             ) : (
               <>
-                {/* Login and Create User Buttons */}
-                <Button
-                  onClick={() => navigate("/login", { replace: true })}
-                  variant="outline-success"
-                  className="me-2"
-                >
-                  Login
-                </Button>
-                <Button
-                  onClick={() => navigate("/create-user", { replace: true })}
-                  variant="outline-primary"
-                >
-                  Create User
-                </Button>
+                <LoginButton/>
               </>
             )}
           </Navbar.Collapse>
@@ -120,3 +106,4 @@ function NavigationBar() {
 }
 
 export default NavigationBar;
+

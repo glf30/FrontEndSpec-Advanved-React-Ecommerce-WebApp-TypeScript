@@ -6,26 +6,21 @@ import { useDispatch } from "react-redux";
 import UserContext from "../context/UserContext";
 import NavigationBar from "./Navbar";
 import { useGetProducts } from "../hooks/useGetProducts";
+import { Product } from "../interface/types";
 
-interface Product {
-  product_id: string;
-  name: string;
-  price: number;
-  id?: number;
-}
 
-const ProductList: React.FC = () => {
-  const userContext = useContext(UserContext);
-  if (!userContext) {
-    throw new Error("UserContext must be used within a UserProvider");
-  }
-  const { user } = userContext;
+const ProductList = () => {
+  // Database User
+  const { databaseuser } = useContext(UserContext);
 
+  // State for list of products
   const [productList, setProductList] = useState<Product[]>([]);
 
+  //setting up hooks
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // assigning the things returned by useGetProducts
   const { fetchProducts, products, loading, error } = useGetProducts();
 
   // Fetch the products when the component mounts
@@ -40,15 +35,18 @@ const ProductList: React.FC = () => {
     }
   }, [loading, error, products]);
 
+  // Verify if they loggedin before letting them add to cart.
+  // when dispatching the product add an id to it so that you can find it better when you need to delete it from the cart
   const handleAddShoppingCart = (product: Product) => {
-    if (user.isLoggedIn) {
+    if (databaseuser.isLoggedIn) {
       dispatch(addToCart({ ...product, id: Date.now().toString() }));
     } else {
       alert("Please login to add items to your cart");
-      navigate("/login");
+      navigate("/");
     }
   };
 
+  
   return (
     <>
       <NavigationBar />
@@ -69,7 +67,7 @@ const ProductList: React.FC = () => {
                       <Button
                         variant="outline-success"
                         onClick={() =>
-                          handleAddShoppingCart({ ...product, id: Date.now() })
+                          handleAddShoppingCart(product)
                         }
                       >
                         Add to Cart
