@@ -57,8 +57,16 @@ const Profile = () => {
     event.preventDefault();
 
     try {
+      // const response = await axios.put<Customer>(
+      //   `http://127.0.0.1:5000/customers/${databaseuser.customer_id}`,
+      //   {
+      //     name: customerName,
+      //     email: customerEmail,
+      //     phone: customerPhone,
+      //   }
+      // );
       const response = await axios.put<Customer>(
-        `http://127.0.0.1:5000/customers/${databaseuser.customer_id}`,
+        `https://backendcore-advanced-flask-api.onrender.com/customers/${databaseuser.customer_id}`,
         {
           name: customerName,
           email: customerEmail,

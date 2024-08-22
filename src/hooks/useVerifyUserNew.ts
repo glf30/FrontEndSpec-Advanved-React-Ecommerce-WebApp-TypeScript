@@ -29,8 +29,17 @@ const useVerifyUserNew = () => {
             };
           } else {
             // if not create a new customer with the information provided by the authentication data
+            // const newCustomerResponse = await axios.post(
+            //   "http://127.0.0.1:5000/customers",
+            //   {
+            //     name: user.name || "",
+            //     email: user.email || "",
+            //     phone: user.phone_number || "111-111-1111",
+            //   }
+            // );
+
             const newCustomerResponse = await axios.post(
-              "http://127.0.0.1:5000/customers",
+              "https://backendcore-advanced-flask-api.onrender.com/customers",
               {
                 name: user.name || "",
                 email: user.email || "",

@@ -46,11 +46,17 @@ const ShoppingCart = () => {
     } else {
       try {
         const productIds = shoppingCart.map((item: Item) => item.product_id);
-        const response = await axios.post("http://127.0.0.1:5000/orders", {
+        // const response = await axios.post("http://127.0.0.1:5000/orders", {
+        //   customer_id: databaseuser.customer_id,
+        //   date: formattedDate,
+        //   product_id: productIds,
+        // });
+        const response = await axios.post("https://backendcore-advanced-flask-api.onrender.com/orders", {
           customer_id: databaseuser.customer_id,
           date: formattedDate,
           product_id: productIds,
         });
+        
 
         alert("Order placed successfully");
         // Clear the cart
